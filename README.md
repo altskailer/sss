@@ -1,11 +1,15 @@
-extends Area2D
+extends Node2D
 
-signal collected  # إشارة لما اللاعب يجمع الكوين
+@export var coin_scene: PackedScene
+@export var number_of_coins := 50
+@export var spawn_area := Rect2(Vector2(0,0), Vector2(1000,600))
 
 func _ready():
-    connect("body_entered", Callable(self, "_on_body_entered"))
-
-func _on_body_entered(body):
-    if body.name == "Player":  # غيّر الاسم حسب عقدة اللاعب
-        emit_signal("collected")
-        queue_free()  # احذف الكوين بعد جمعها
+    randomize()
+    for i in range(number_of_coins):
+        var coin = coin_scene.instantiate()
+        coin.position = Vector2(
+            randf_range(spawn_area.position.x, spawn_area.end.x),
+            randf_range(spawn_area.position.y, spawn_area.end.y)
+        )
+        add_child(coin)
